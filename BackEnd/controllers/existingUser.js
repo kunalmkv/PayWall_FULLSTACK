@@ -4,7 +4,7 @@ function stringInvalid(str) {
         return true;
     else return false;
 }
-exports.login = async (req, res, next) => {
+/*exports.login = async (req, res, next) => {
     try {
 
         const mail = req.body.mail;
@@ -32,4 +32,30 @@ exports.login = async (req, res, next) => {
             error: 'Oopss!Searching not succeed!'
         })
     }
+}*/
+exports.login = async (req, res, next) => {
+    try {
+
+        const mail = req.body.mail;
+        const password = req.body.pw;
+        if (stringInvalid(password) || stringInvalid(mail)) {
+            return res.status(400).json({ success: false, err: "Missing input parameters" });
+        }
+        user.findAll({ where: { email: mail } }).then(user => {
+            if (user.length > 0) {
+                if (user[0].password === password) {
+                    return res.status(200).json({ success: true, message: 'User Logged in successfully' });
+                }
+                else {
+                    return res.status(400).json({ success: false, message: 'Password Incorrect' });
+                }
+            }
+            else {
+                return res.status(404).json({ success: false, message: 'User doesnt exist' });
+            }
+        })
+    } catch (err) {
+        res.status(500).json({ message: err, success: false })
+    }
 }
+

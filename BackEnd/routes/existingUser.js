@@ -2,9 +2,9 @@ const path = require('path');
 
 const express = require('express');
 
-const newUserController = require('../controllers/userLogin');
+const existingUserController = require('../controllers/existingUser');
 
 const router = express.Router();
-router.post('/login', newUserController.login);
+router.post('/login', existingUserController.login);
 
 module.exports = router;

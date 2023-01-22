@@ -44,7 +44,7 @@ async function userLogin(event) {
         pw
     }
     try {
-        await axios.post("http://localhost:3000/login", loginDetail).then(response => {
+        await axios.post("http://localhost:3000/existingUser/login", loginDetail).then(response => {
             if (response.status === 200) {
                 alert(response.data.message);
             }
@@ -55,8 +55,8 @@ async function userLogin(event) {
         })
     }
     catch (err) {
-        //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
-        alert('Oopss! User exists Already!! Login Please');
+        //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";,
+        alert(err.message);
         console.log(JSON.stringify(err));
         document.body.innerHTML += `<div style="color:red;"> ${err.message} <div>`
     }
