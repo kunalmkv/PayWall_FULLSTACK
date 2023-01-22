@@ -1,0 +1,126 @@
+/*window.addEventListener("DOMContentLoaded", async () => {
+    try {
+        await axios.get("http://localhost:3000/admin/get-expense").then((response) => {
+            console.log(response);
+            for (var i = 0; i < response.data.allUsers.length; i++) {
+                showMeUser(response.data.allUsers[i]);
+            }
+        })
+    }
+    catch (err) {
+        console.log(err);
+    }
+})*/
+async function newUserSave(event) {
+    event.preventDefault();
+    const newID = event.target.newUserID.value;
+    const mail = event.target.newEmail.value;
+    const pw = event.target.newPW.value;
+
+    const obj = {
+        newID,
+        mail,
+        pw
+    }
+    try {
+        await axios.post("http://localhost:3000/newUser/add", obj).then(response => {
+            console.log('***12344*****', response);
+            //showMeUser(response.data.newExpenseDetail);
+        })
+    }
+    catch (err) {
+        document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
+        console.log("****** Could not post error*****", err);
+    }
+
+}
+
+/*window.addEventListener("DOMContentLoaded", () => {
+    axios.get("http://localhost:3000/admin/get-expense").then((response) => {
+        console.log(response);
+        for (var i = 0; i < response.data.allUsers.length; i++) {
+            showMeUser(response.data.allUsers[i]);
+        }
+    })
+        .catch((err) => {
+            console.log(err);
+        })
+})*/
+
+
+/*function showMeUser(obj) {
+
+    document.getElementById('details').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('category').value = '';
+
+
+    const parentNode = document.getElementById('listofUsers');
+    console.log('***123**', obj);
+    const childNode = `<li class="items" id=${obj.id}> ₹${obj.amount} - ${obj.detail}
+        <button onclick="deleteUser('${obj.id}')"> Delete expense </button>
+        <button onclick="editUser('${obj.detail}','${obj.amount}','${obj.category}','${obj.id}')"> Edit </button>
+          </li>`;
+
+    parentNode.innerHTML = parentNode.innerHTML + childNode;
+}
+async function deleteUser(userId) {
+    try {
+        await axios.delete(`http://localhost:3000/admin/delete-expense/${userId}`)
+            .then((response) => {
+                removeFromScreen(userId);
+            })
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}*/
+/*function deleteUser(userId) {
+
+    axios.delete(`http://localhost:3000/admin/delete-expense/${userId}`)
+        .then((response) => {
+            removeFromScreen(userId);
+        })
+
+}*/
+/*function editUser(emai, user, cate, userId) {
+    document.getElementById('details').value = emai;
+    document.getElementById('amount').value = user;
+    document.getElementById('category').value = cate;
+    deleteUser(userId);
+    removeFromScreen(userId);
+
+}*/
+/*async function editUser(emai, user, cate, userId) {
+    document.getElementById('details').value = emai;
+    document.getElementById('amount').value = user;
+    document.getElementById('category').value = cate;
+    deleteUser(userId);
+    removeFromScreen(userId);
+    var editObj = {
+        id: userId,
+        amount: user,
+        detail: emai,
+        category: cate
+    }
+    try {
+        await axios.put(`http://localhost:3000/admin/edit-expense/${userId}`, editObj)
+            .then((response) => {
+                //removeFromScreen(userId);
+                deleteUser(userId);
+                console.log('edited', response);
+            })
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}
+function removeFromScreen(userId) {
+    const parent = document.getElementById('listofUsers');
+    const childtobeDeleted = document.getElementById(userId);
+    if (childtobeDeleted) {
+        parent.removeChild(childtobeDeleted);
+    }
+}*/
