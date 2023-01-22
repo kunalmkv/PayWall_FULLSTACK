@@ -49,14 +49,13 @@ async function userLogin(event) {
                 alert(response.data.message);
             }
             else {
-                throw new error(response.data.message);
+                alert(response.data.message);
             }
-            //showMeUser(response.data.newExpenseDetail);
         })
     }
     catch (err) {
         //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";,
-        alert(err.message);
+        //alert(err.message);
         console.log(JSON.stringify(err));
         document.body.innerHTML += `<div style="color:red;"> ${err.message} <div>`
     }
