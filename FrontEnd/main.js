@@ -29,7 +29,8 @@ async function newUserSave(event) {
         })
     }
     catch (err) {
-        document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
+        //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
+        alert('Oopss! User exists Already!! Login Please');
         console.log("****** Could not post error*****", err);
     }
 
