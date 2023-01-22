@@ -35,6 +35,33 @@ async function newUserSave(event) {
     }
 
 }
+async function userLogin(event) {
+    event.preventDefault();
+    const mail = event.target.email.value;
+    const pw = event.target.pw.value;
+    const loginDetail = {
+        mail,
+        pw
+    }
+    try {
+        await axios.post("http://localhost:3000/login", loginDetail).then(response => {
+            if (response.status === 200) {
+                alert(response.data.message);
+            }
+            else {
+                throw new error(response.data.message);
+            }
+            //showMeUser(response.data.newExpenseDetail);
+        })
+    }
+    catch (err) {
+        //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
+        alert('Oopss! User exists Already!! Login Please');
+        console.log(JSON.stringify(err));
+        document.body.innerHTML += `<div style="color:red;"> ${err.message} <div>`
+    }
+
+}
 
 /*window.addEventListener("DOMContentLoaded", () => {
     axios.get("http://localhost:3000/admin/get-expense").then((response) => {

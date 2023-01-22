@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/loginStyle.css">
-    <title>Document</title>
+    <title>PayWall-Signup/Login</title>
 </head>
 
 
@@ -24,9 +24,9 @@
                 <img src="images/google.png">
                 <img src="images/git.png">
             </div>
-            <form id="login" class="input-group" onsubmit="savetoStorage(event)">
-                <input type="text" class="input-field" placeholder="User Id" required>
-                <input type="text" class="input-field" placeholder="Enter Password" required>
+            <form id="login" class="input-group" onsubmit="userLogin(event)">
+                <input type="email" class="input-field" id="email" name="email" placeholder="Enter email ID" required>
+                <input type="password" class="input-field" placeholder="Enter Password" id="pw" name="pw" required>
                 <input type="checkbox" class="check-box"><span> Remember Password</span>
                 <button type="submit" class="submit-btn">Login</button>
             </form>
@@ -35,7 +35,7 @@
                     required>
                 <input type="email" class="input-field" name="newEmail" id="newEmail" placeholder="Enter Email address"
                     required>
-                <input type="text" class="input-field" id="newPW" name="newPW" placeholder="Enter Strong Password"
+                <input type="password" class="input-field" id="newPW" name="newPW" placeholder="Enter Strong Password"
                     required>
                 <input type="checkbox" class="check-box"><span> I agree to Terms and Conditions</span>
                 <button type="submit" class="submit-btn">Register</button>
