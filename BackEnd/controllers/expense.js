@@ -1,0 +1,81 @@
+const userWallet = require('../models/wallet');
+function stringInvalid(str) {
+    if (str == undefined || str.length == 0 || str == null)
+        return true;
+    else return false;
+}
+exports.postAddExp = async (req, res, next) => {
+    try {
+        const amount = req.body.amount;
+        const detail = req.body.detail;
+        const category = req.body.category;
+        if (stringInvalid(amount) || stringInvalid(detail) || stringInvalid(category)) {
+            return res.status(400).json({ success: false, err: "Missing input parameters" });
+        }
+        const data = await userWallet.create({
+            amount: amount,
+            detail: detail,
+            category: category
+        })
+        return res.status(201).json({ success: true, newExpenseDetail: data });
+    } catch (err) {
+
+        return res.status(403).json({
+            success: false,
+            error: err
+        })
+    }
+}
+
+exports.getExpense = async (req, res, next) => {
+    try {
+        const getWallet = await userWallet.findAll();
+        res.status(200).json({ allUsers: getWallet });
+
+    } catch (err) {
+        console.log('***GET expense failed***', JSON.stringify(err));
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+exports.deleteExpense = async (req, res, next) => {
+    try {
+        if (req.params.id == 'undefined') {
+            console.log('ID is missing');
+            return res.status(400).json({ err: 'ID is missing' });
+        }
+        const uId = req.params.id;
+        await userWallet.destroy({ where: { id: uId } });
+        res.status(200);
+    } catch (err) {
+        console.log('***DELETE failed***', JSON.stringify(err));
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+exports.editExpense = async (req, res, next) => {
+    try {
+        if (!req.params.id) {
+            console.log('ID is missing');
+            return res.status(400).json({ err: 'ID is missing' });
+        }
+        const uId = req.params.id;
+        const updatedAmount = req.body.amount;
+        const updatedDetail = req.body.detail;
+        const updatedCategory = req.body.category;
+        data = await userWallet.update(
+            { amount: updatedAmount, detail: updatedDetail, category: updatedCategory },
+            { where: { id: uId } }
+        )
+        res.status(201).json({ newExpenseDetail: data });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    }
+}
