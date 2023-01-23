@@ -1,4 +1,5 @@
 const user = require('../models/user');
+const bcrypt = require('bcrypt');
 function stringInvalid(str) {
     if (str == undefined || str.length == 0 || str == null)
         return true;
@@ -43,16 +44,24 @@ exports.login = async (req, res, next) => {
         }
         user.findAll({ where: { email: mail } }).then(user => {
             if (user.length > 0) {
-                if (user[0].password === password) {
-                    return res.status(200).json({ success: true, message: 'User Logged in successfully' });
-                }
-                else {
-                    return res.status(400).json({ success: false, message: 'Password Incorrect' });
-                }
+                bcrypt.compare(password, user[0].password, function (err, response) {
+                    if (err) {
+                        return res.json({ success: false, message: 'something went wrong' });
+                    }
+                    if (response) {
+
+                        return res.status(200).json({ success: true, message: 'Successfully Logged IN' })
+                    }
+                    else {
+                        return res.status(401).json({ success: false, message: 'password incorrect' })
+                    }
+                })
+
             }
             else {
-                return res.status(404).json({ success: false, message: 'User doesnt exist' });
+                return res.status(401).json({ success: false, message: 'password do not match' });
             }
+
         })
     } catch (err) {
         res.status(500).json({ message: err, success: false })
