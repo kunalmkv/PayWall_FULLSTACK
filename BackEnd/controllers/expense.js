@@ -52,7 +52,10 @@ exports.deleteExpense = async (req, res, next) => {
             return res.status(400).json({ success: false, err: 'ID is missing' });
         }
 
-        await userWallet.destroy({ where: { id: uId, userId: userId } }).then(() => {
+        await userWallet.destroy({ where: { id: uId, userId: userId } }).then((noOfRows) => {
+            if (noOfRows === 0) {
+                return res.status(404).json({ success: false, message: 'Expense doesnt belong to user' });
+            }
             return res.status(200).json({ success: true, message: "Deleted successfully" })
         })
 
@@ -60,7 +63,8 @@ exports.deleteExpense = async (req, res, next) => {
         console.log('***DELETE failed***', JSON.stringify(err));
         res.status(500).json({
             success: false,
-            error: err
+            error: err,
+            message: 'deletion failed'
         })
     }
 }
