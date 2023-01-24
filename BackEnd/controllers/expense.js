@@ -9,13 +9,15 @@ exports.postAddExp = async (req, res, next) => {
         const amount = req.body.amount;
         const detail = req.body.detail;
         const category = req.body.category;
+        const userId = req.user.id;
         if (stringInvalid(amount) || stringInvalid(detail) || stringInvalid(category)) {
             return res.status(400).json({ success: false, err: "Missing input parameters" });
         }
         const data = await userWallet.create({
             amount: amount,
             detail: detail,
-            category: category
+            category: category,
+            userId: userId
         })
         return res.status(201).json({ success: true, newExpenseDetail: data });
     } catch (err) {
@@ -29,7 +31,7 @@ exports.postAddExp = async (req, res, next) => {
 
 exports.getExpense = async (req, res, next) => {
     try {
-        const getWallet = await userWallet.findAll({ where: { userId: req.userOBJECT.id } });
+        const getWallet = await userWallet.findAll({ where: { userId: req.user.id } });
         return res.status(200).json({ success: true, allUsers: getWallet });
 
     } catch (err) {
@@ -44,12 +46,13 @@ exports.getExpense = async (req, res, next) => {
 exports.deleteExpense = async (req, res, next) => {
     try {
         const uId = req.params.id;
+        const userId = req.user.id;
         if (stringInvalid(uId)) {
             console.log('ID is missing');
             return res.status(400).json({ success: false, err: 'ID is missing' });
         }
 
-        await userWallet.destroy({ where: { id: uId } }).then(() => {
+        await userWallet.destroy({ where: { id: uId, userId: userId } }).then(() => {
             return res.status(200).json({ success: true, message: "Deleted successfully" })
         })
 

@@ -46,7 +46,7 @@ async function userLogin(event) {
     catch (err) {
         //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";,
         //alert(err.message);
-        console.log(JSON.stringify(err));
+        console.log('****Not login***', JSON.stringify(err));
         document.body.innerHTML += `<div style="color:red;"> ${err.message} <div>`
     }
 

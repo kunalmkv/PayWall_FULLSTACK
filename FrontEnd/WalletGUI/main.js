@@ -1,7 +1,7 @@
 window.addEventListener("DOMContentLoaded", async () => {
     try {
         const token = localStorage.getItem('token');
-        await axios.get("http://localhost:3000/expense/get-expense", { Headers: { "Authorization": token } }).then((response) => {
+        await axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } }).then((response) => {
 
             for (var i = 0; i < response.data.allUsers.length; i++) {
                 showMeUser(response.data.allUsers[i]);
@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.log(err);
     }
 })
-async function savetoLocal(event) {
+async function savetoDB(event) {
     event.preventDefault();
     const amount = event.target.amount.value;
     const detail = event.target.desc.value;
@@ -23,8 +23,9 @@ async function savetoLocal(event) {
         detail,
         category
     }
+    const token = localStorage.getItem('token');
     try {
-        await axios.post("http://localhost:3000/expense/add-expense", obj).then(response => {
+        await axios.post("http://localhost:3000/expense/add-expense", obj, { headers: { "Authorization": token } }).then(response => {
             console.log('***12344*****', response);
             showMeUser(response.data.newExpenseDetail);
         })
@@ -67,7 +68,8 @@ function showMeUser(obj) {
 }
 async function deleteUser(userId) {
     try {
-        await axios.delete(`http://localhost:3000/expense/delete-expense/${userId}`)
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:3000/expense/delete-expense/${userId}`, { headers: { "Authorization": token } })
             .then((response) => {
                 removeFromScreen(userId);
             })

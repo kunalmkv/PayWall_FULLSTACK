@@ -7,8 +7,8 @@ const expenseController = require('../controllers/expense');
 
 const router = express.Router();
 
-router.post('/add-expense', expenseController.postAddExp);
+router.post('/add-expense', userAuthentication.authenticate, expenseController.postAddExp);
 router.get('/get-expense', userAuthentication.authenticate, expenseController.getExpense);
-router.delete('/delete-expense/:id', expenseController.deleteExpense);
+router.delete('/delete-expense/:id', userAuthentication.authenticate, expenseController.deleteExpense);
 router.put('/edit-expense/:id', expenseController.editExpense);
 module.exports = router;
