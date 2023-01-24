@@ -1,6 +1,6 @@
 const userWallet = require('../models/wallet');
 function stringInvalid(str) {
-    if (str == undefined || str.length == 0 || str == null)
+    if (str == undefined || str.length === 0 || str == null)
         return true;
     else return false;
 }
@@ -29,12 +29,13 @@ exports.postAddExp = async (req, res, next) => {
 
 exports.getExpense = async (req, res, next) => {
     try {
-        const getWallet = await userWallet.findAll();
-        res.status(200).json({ allUsers: getWallet });
+        const getWallet = await userWallet.findAll({ where: { userId: req.userOBJECT.id } });
+        return res.status(200).json({ success: true, allUsers: getWallet });
 
     } catch (err) {
         console.log('***GET expense failed***', JSON.stringify(err));
-        res.status(500).json({
+        return res.status(402).json({
+            success: false,
             error: err
         })
     }
@@ -42,16 +43,20 @@ exports.getExpense = async (req, res, next) => {
 
 exports.deleteExpense = async (req, res, next) => {
     try {
-        if (req.params.id == 'undefined') {
-            console.log('ID is missing');
-            return res.status(400).json({ err: 'ID is missing' });
-        }
         const uId = req.params.id;
-        await userWallet.destroy({ where: { id: uId } });
-        res.status(200);
+        if (stringInvalid(uId)) {
+            console.log('ID is missing');
+            return res.status(400).json({ success: false, err: 'ID is missing' });
+        }
+
+        await userWallet.destroy({ where: { id: uId } }).then(() => {
+            return res.status(200).json({ success: true, message: "Deleted successfully" })
+        })
+
     } catch (err) {
         console.log('***DELETE failed***', JSON.stringify(err));
         res.status(500).json({
+            success: false,
             error: err
         })
     }

@@ -1,7 +1,8 @@
 window.addEventListener("DOMContentLoaded", async () => {
     try {
-        await axios.get("http://localhost:3000/expense/get-expense").then((response) => {
-            console.log(response);
+        const token = localStorage.getItem('token');
+        await axios.get("http://localhost:3000/expense/get-expense", { Headers: { "Authorization": token } }).then((response) => {
+
             for (var i = 0; i < response.data.allUsers.length; i++) {
                 showMeUser(response.data.allUsers[i]);
             }
