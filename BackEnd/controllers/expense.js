@@ -46,7 +46,7 @@ exports.getExpense = async (req, res, next) => {
 exports.deleteExpense = async (req, res, next) => {
     try {
         const uId = req.params.id;
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (stringInvalid(uId)) {
             console.log('ID is missing');
             return res.status(400).json({ success: false, err: 'ID is missing' });
