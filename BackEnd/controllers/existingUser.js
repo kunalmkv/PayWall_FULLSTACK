@@ -1,8 +1,9 @@
+
 const user = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-function generateAccessToken(id, name) {
-    return jwt.sign({ userId: id, userName: name }, '9868314748');
+const generateAccessToken = (id, name, ispremiumuser) => {
+    return jwt.sign({ userId: id, userName: name, ispremiumuser }, '9868314748');
 }
 function stringInvalid(str) {
     if (str == undefined || str.length == 0 || str == null)
@@ -10,7 +11,7 @@ function stringInvalid(str) {
     else return false;
 }
 
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
     try {
 
         const mail = req.body.mail;
@@ -29,7 +30,7 @@ exports.login = async (req, res, next) => {
                     }
                     if (response) {
 
-                        return res.status(200).json({ success: true, message: 'Successfully Logged IN', token: generateAccessToken(user[0].id, user[0].userName) });
+                        return res.status(200).json({ success: true, message: 'Successfully Logged IN', token: generateAccessToken(user[0].id, user[0].userName, user[0].ispremiumuser) });
                     }
                     else {
                         return res.status(401).json({ success: false, message: 'password incorrect' })
@@ -47,4 +48,8 @@ exports.login = async (req, res, next) => {
         res.status(500).json({ message: err, success: false })
     }
 }
+module.exports = {
+    login,
+    generateAccessToken
 
+}

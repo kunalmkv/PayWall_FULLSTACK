@@ -1,5 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/orders');
+const existingUserController = require('./existingUser')
 
 
 const purchasepremium = async (req, res) => {
@@ -35,7 +36,7 @@ const updateTransactionStatus = async (req, res) => {
         const promise2 = req.user.update({ ispremiumuser: true })
 
         Promise.all([promise1, promise2]).then(() => {
-            return res.status(202).json({ sucess: true, message: "Transaction Successful" });
+            return res.status(202).json({ sucess: true, message: "Transaction Successful", token: existingUserController.generateAccessToken(userId, undefined, true) });
         }).catch((error) => {
             throw new Error(error)
         })

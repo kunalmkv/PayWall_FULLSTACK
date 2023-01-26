@@ -6,6 +6,7 @@ const userWallet = require('./models/wallet');
 const Order = require('./models/orders');
 const sequelize = require('./util/database');
 const purchaseRoutes = require('./routes/purchase');
+const premiumRoute = require('./routes/premium');
 
 var cors = require('cors');
 const newUserRoutes = require('./routes/newUser');
@@ -14,9 +15,12 @@ const expenseRoutes = require('./routes/expense');
 
 
 
+
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/premium', premiumRoute);
 app.use('/newUser', newUserRoutes);
 app.use('/existingUser', existingUserRoutes);
 app.use('/expense', expenseRoutes);
