@@ -52,6 +52,12 @@ async function userLogin(event) {
 
 }
 
+function showforgetpasswordForm() {
+    window.location.href = "forgotForm.html"
+
+}
+
+
 /*window.addEventListener("DOMContentLoaded", () => {
     axios.get("http://localhost:3000/admin/get-expense").then((response) => {
         console.log(response);
