@@ -1,4 +1,4 @@
-const User = require('../models/user');
+/*const User = require('../models/user');
 const Wallet = require('../models/wallet');
 const sequelize = require('../util/database');
 const getLeaderBoard = async (req, res) => {
@@ -32,4 +32,28 @@ const getLeaderBoard = async (req, res) => {
 }
 module.exports = {
     getLeaderBoard
-}
+}*/
+const User = require('../models/user');
+const Wallet = require('../models/wallet');
+const sequelize = require('../util/database');
+
+const getLeaderBoard = async (req, res) => {
+    try {
+        const userWallets = await sequelize.query(
+            `SELECT user.userName, wallet.userId, SUM(wallet.amount) as total_cost 
+            FROM users as user 
+            JOIN wallets as wallet 
+            ON user.id = wallet.userId
+            GROUP BY wallet.userId`,
+            { type: sequelize.QueryTypes.SELECT }
+        );
+        userWallets.sort((a, b) => b.total_cost - a.total_cost);
+        res.status(200).json(userWallets);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+module.exports = {
+    getLeaderBoard
+};
