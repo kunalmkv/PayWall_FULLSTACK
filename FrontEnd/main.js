@@ -53,7 +53,7 @@ async function userLogin(event) {
 }
 
 function showforgetpasswordForm() {
-    window.location.href = "forgotForm.html"
+    window.location.href = "forgotPasswordForm/forgotForm.html"
 
 }
 

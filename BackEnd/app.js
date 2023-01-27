@@ -12,7 +12,7 @@ var cors = require('cors');
 const newUserRoutes = require('./routes/newUser');
 const existingUserRoutes = require('./routes/existingUser');
 const expenseRoutes = require('./routes/expense');
-
+const passwordRoutes = require('./routes/password');
 
 
 
@@ -25,6 +25,7 @@ app.use('/newUser', newUserRoutes);
 app.use('/existingUser', existingUserRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
+app.use('/password', passwordRoutes);
 
 
 
