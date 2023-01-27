@@ -8,7 +8,8 @@ async function forgotMail(event) {
     }
     console.log(userDetails);
     await axios.post('http://localhost:3000/password/forgotpassword', userDetails).then(response => {
-        if (response.status === 202) {
+        if (response.status === 200) {
+            console.log(response.data);
             document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
             alert(response.data.message);
         } else {

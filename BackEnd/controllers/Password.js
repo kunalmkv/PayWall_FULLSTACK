@@ -1,11 +1,13 @@
-const forgot = require('../models/forgotpassword');
+const forgot = require('../models/password');
 const User = require('../models/user');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 const config = require('../config/config');
 const sendResetPasswordMail = async (name, email, token) => {
     try {
-        const transport = nodemailer.createTestAccount({
+
+        //let testAccount = await nodemailer.createTestAccount();
+        const transporter = await nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
@@ -55,11 +57,22 @@ const forgotPassword = async (req, res, next) => {
 
     }
     catch (error) {
-        res.status(400).json({ success: false, message: 'failed' })
+        res.status(400).json({ success: false, message: 'failed' });
     }
 
 }
+const resetPassword = async (req, res) => {
+    try {
+        const token = req.query.token;
+
+
+    } catch (error) {
+        res.status(400).json({ success: false, message: 'failed' })
+
+    }
+}
 
 module.exports = {
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }
