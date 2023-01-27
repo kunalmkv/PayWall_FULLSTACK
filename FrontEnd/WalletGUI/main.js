@@ -42,7 +42,8 @@ function showLeaderboard() {
     inputElement.onclick = async () => {
         const token = localStorage.getItem('token')
         const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard', { headers: { "Authorization": token } })
-        console.log(userLeaderBoardArray)
+        console.log('******** in show leader Board')
+        console.log('leader board data', userLeaderBoardArray.data);
 
         var leaderboardElem = document.getElementById('leaderboard')
         leaderboardElem.innerHTML += '<h1> Leader Board </<h1>'
