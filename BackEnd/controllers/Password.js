@@ -23,7 +23,7 @@ const sendResetPasswordMail = async (name, email, id) => {
             from: config.emailUser,
             to: email,
             subject: 'Reset Password',
-            html: `<p> Hiii ${name}, Please copy the link and<a href=http://localhost:3000/password/resetpassword/${id}">  reset pssword </a>`
+            html: `<p> Hiii ${name}, Please copy the link and<a href=http://localhost:3000/password/resetpassword/${id}>  reset pssword </a>`
         }
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -137,8 +137,8 @@ const resetpassword = async (req, res) => {
 const updatepassword = (req, res) => {
 
     try {
-        const { newpassword } = req.query;
-        const { resetpasswordid } = req.params;
+        const newpassword = req.params;
+        const resetpasswordid = req.params;
         forgot.findOne({ where: { id: resetpasswordid } }).then(resetpasswordrequest => {
             User.findOne({ where: { id: resetpasswordrequest.userId } }).then(user => {
                 // console.log('userDetails', user)
