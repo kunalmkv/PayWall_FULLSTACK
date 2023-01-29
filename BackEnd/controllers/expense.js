@@ -1,5 +1,7 @@
 const wallet = require('../models/wallet');
 const AWS = require('aws-sdk');
+const UserServices = require('../services/userservices');
+require('dotenv').config();
 
 function stringInvalid(str) {
     if (str == undefined || str.length === 0 || str == null)
@@ -7,9 +9,9 @@ function stringInvalid(str) {
     else return false;
 }
 async function uploadToS3(data, filename) {
-    const BUCKET_NAME = 'expensetest';
-    const IAM_USER_KEY = 'AKIAVBQGEUHMAT34IWHO';
-    const IAM_USER_SECRET = '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';
+    const BUCKET_NAME = process.env.BUCKET_NAME;
+    const IAM_USER_KEY = process.env.IAM_USER_KEY;
+    const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
 
     let s3bucket = new AWS.S3({
         accessKeyId: IAM_USER_KEY,
@@ -46,14 +48,23 @@ async function uploadToS3(data, filename) {
 
 
 const downlaodExpense = async (req, res) => {
-    console.log(req.user.id);
-    const expenses = await req.user.getWallets();
-    console.log(expenses);
-    const userID = req.user.id;
-    const stringifiedWallet = JSON.stringify(expenses);
-    const filename = `Wallet${userID}/${new Date()}.txt`;
-    const fileURL = await uploadToS3(stringifiedWallet, filename);
-    res.status(201).json({ fileURL, success: true });
+
+    try {
+        console.log(req.user.id);
+
+        const expenses = await UserServices.getWallets(req);
+        console.log(expenses);
+        const userID = req.user.id;
+        const stringifiedWallet = JSON.stringify(expenses);
+        const filename = `Wallet${userID}/${new Date()}.txt`;
+        const fileURL = await uploadToS3(stringifiedWallet, filename);
+        return res.status(201).json({ fileURL, success: true });
+
+    } catch (error) {
+        return res.status(500).json({ fileURL: '', success: false, message: error });
+
+    }
+
 
 }
 const postAddExp = async (req, res, next) => {
