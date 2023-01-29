@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
-const userWallet = sequelize.define('Wallet', {
+const wallet = sequelize.define('Wallet', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -18,4 +18,4 @@ const userWallet = sequelize.define('Wallet', {
 
     }
 });
-module.exports = userWallet;
+module.exports = wallet;
