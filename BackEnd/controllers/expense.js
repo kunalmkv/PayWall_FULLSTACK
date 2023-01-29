@@ -1,6 +1,8 @@
 const wallet = require('../models/wallet');
 const S3service = require('../services/S3services')
 const UserServices = require('../services/userservices');
+const downloadHistoryTable = require('../models/downloadHistory');
+
 require('dotenv').config();
 
 function stringInvalid(str) {
@@ -8,56 +10,25 @@ function stringInvalid(str) {
         return true;
     else return false;
 }
-async function uploadToS3(data, filename) {
-    const BUCKET_NAME = process.env.BUCKET_NAME;
-    const IAM_USER_KEY = process.env.IAM_USER_KEY;
-    const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
-
-    let s3bucket = new AWS.S3({
-        accessKeyId: IAM_USER_KEY,
-        secretAccessKey: IAM_USER_SECRET
-    })
-    /* s3bucket.createBucket(() => {
-         var params = {
-             Bucket: BUCKET_NAME,
-             Key: filename,
-             Body: data
-         }*/
-    var params = {
-        Bucket: BUCKET_NAME,
-        Key: filename,
-        Body: data,
-        ACL: 'public-read'
-    }
-
-    return new Promise((resolve, reject) => {
-        s3bucket.upload(params, (err, s3response) => {
-            if (err) {
-                console.log('Something went wrong', err);
-                reject(err);
-            }
-            else {
-                console.log('success', s3response);
-                resolve(s3response.Location);
-            }
-        })
-
-    })
-
-}
 
 
 const downlaodExpense = async (req, res) => {
 
     try {
-        console.log(req.user.id);
-
+        const uId = req.user.id;
+        if (!req.user.ispremiumuser) {
+            return res.status(401).json({ success: false, error: 'Sorry, You are not a premium User' })
+        }
         const expenses = await UserServices.getWallets(req);
         console.log(expenses);
         const userID = req.user.id;
         const stringifiedWallet = JSON.stringify(expenses);
         const filename = `Wallet${userID}/${new Date()}.txt`;
         const fileURL = await S3service.uploadToS3(stringifiedWallet, filename);
+        await downloadHistoryTable.create({
+            userId: userID,
+            downloadURL: fileURL
+        })
         return res.status(201).json({ fileURL, success: true });
 
     } catch (error) {
@@ -154,9 +125,22 @@ const editExpense = async (req, res, next) => {
         })
     }
 }
+const downloadHistory = async (req, res) => {
+    const uID = req.user.id;
+    console.log('*********', uID, '*********');
+
+    const Data = await downloadHistoryTable.findAll({ where: { userId: uID } });
+
+    console.log('*********', historyData);
+
+    return res.status(200).json({ success: true, historyData });
+
+
+}
 
 module.exports = {
     downlaodExpense,
+    downloadHistory,
     postAddExp,
     getExpense,
     deleteExpense,

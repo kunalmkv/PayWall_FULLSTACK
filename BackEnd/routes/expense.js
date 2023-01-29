@@ -13,4 +13,6 @@ router.delete('/delete-expense/:id', userAuthentication.authenticate, expenseCon
 router.put('/edit-expense/:id', expenseController.editExpense);
 
 router.get('/download', userAuthentication.authenticate, expenseController.downlaodExpense);
+router.get('/downloadhistory', userAuthentication.authenticate, expenseController.downloadHistory);
+
 module.exports = router;

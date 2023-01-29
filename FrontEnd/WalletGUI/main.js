@@ -35,15 +35,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function showLeaderboard() {
-    const inputElement = document.createElement("input")
+    const inputElement = document.createElement("input");
     inputElement.type = "button"
     inputElement.value = 'Show Leaderboard'
     inputElement.class = "btn"
     inputElement.onclick = async () => {
         const token = localStorage.getItem('token')
         const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard', { headers: { "Authorization": token } })
-        console.log('******** in show leader Board')
-        console.log('leader board data', userLeaderBoardArray.data);
+        //console.log('******** in show leader Board')
+        // console.log('leader board data', userLeaderBoardArray.data);
 
         var leaderboardElem = document.getElementById('leaderboard')
         leaderboardElem.innerHTML += '<h1> Leader Board </<h1>'
@@ -216,12 +216,26 @@ async function download() {
                 a.download = 'myexpense.csv';
                 a.click();
             } else {
+                alert(response.message);
                 throw new Error(response.data.message)
             }
 
         })
         .catch((err) => {
+            alert(err);
             console.log(err)
         });
 }
+async function downloadHistory() {
+    const token = localStorage.getItem('token');
+    const history = await axios.get('http://localhost:3000/user/downloadhistory', { headers: { "Authorization": token } })
+    console.log(history);
 
+    var historyElem = document.getElementById('downloadHistoryList')
+    historyElem.innerHTML += '<h1>Download History </<h1>'
+    history.forEach((historyData) => {
+        historyElem.innerHTML += `<li>Date - ${historyData.createdAt} link - ${historyData.downloadURL || 0} </li>`
+    })
+
+
+}

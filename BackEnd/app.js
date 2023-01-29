@@ -33,7 +33,6 @@ app.use('/existingUser', existingUserRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/password', passwordRoutes);
-
 app.use('/user', expenseRoutes);
 
 
