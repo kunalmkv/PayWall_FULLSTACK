@@ -1,5 +1,5 @@
 const wallet = require('../models/wallet');
-const AWS = require('aws-sdk');
+const S3service = require('../services/S3services')
 const UserServices = require('../services/userservices');
 require('dotenv').config();
 
@@ -57,7 +57,7 @@ const downlaodExpense = async (req, res) => {
         const userID = req.user.id;
         const stringifiedWallet = JSON.stringify(expenses);
         const filename = `Wallet${userID}/${new Date()}.txt`;
-        const fileURL = await uploadToS3(stringifiedWallet, filename);
+        const fileURL = await S3service.uploadToS3(stringifiedWallet, filename);
         return res.status(201).json({ fileURL, success: true });
 
     } catch (error) {
