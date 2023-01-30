@@ -1,3 +1,4 @@
+const backendAPI = 'http://localhost:3000';
 function showPremiumUserMessage() {
     document.getElementById('rzp-button1').style.visibility = "hidden";
     document.getElementById('premium_user').innerHTML = "💎💎 Premium User💎💎"
@@ -13,20 +14,22 @@ function parseJwt(token) {
 }
 window.addEventListener("DOMContentLoaded", async () => {
     try {
+        const page = 1;
         const token = localStorage.getItem('token');
         const decodeToken = parseJwt(token);
-        //console.log(decodeToken);
+        console.log('token:', decodeToken);
         const ispremiumuser = decodeToken.ispremiumuser
         if (ispremiumuser) {
             showPremiumUserMessage();
             showLeaderboard()
 
         }
-        await axios.get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } }).then((response) => {
+        await axios.get(`${backendAPI}/expense/get-expense?page=${page}`, { headers: { "Authorization": token } }).then(({ data: { expense, ...pageData } }) => {
+            console.log(pageData);
 
-            for (var i = 0; i < response.data.allUsers.length; i++) {
-                showMeUser(response.data.allUsers[i]);
-            }
+            expense.forEach(showExpenseToUI);
+            showPagination(pageData);
+
         })
     }
     catch (err) {
@@ -41,7 +44,7 @@ function showLeaderboard() {
     inputElement.class = "btn"
     inputElement.onclick = async () => {
         const token = localStorage.getItem('token')
-        const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard', { headers: { "Authorization": token } })
+        const userLeaderBoardArray = await axios.get(`${backendAPI}/premium/showLeaderBoard`, { headers: { "Authorization": token } })
         //console.log('******** in show leader Board')
         // console.log('leader board data', userLeaderBoardArray.data);
 
@@ -61,13 +64,13 @@ function showLeaderboard() {
 
 document.getElementById('rzp-button1').onclick = async function (e) {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });
+    const response = await axios.get(`${backendAPI}/purchase/premiummembership`, { headers: { "Authorization": token } });
     console.log(response);
     var options = {
         "key": response.data.key_id,
         "order_id": response.data.order.id,
         "handler": async function (response) {
-            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+            await axios.post(`${backendAPI}/purchase/updatetransactionstatus`, {
                 order_id: options.order_id,
                 payment_id: response.razorpay_payment_id
             }, { headers: { "Authorization": token } })
@@ -101,9 +104,9 @@ async function savetoDB(event) {
     }
     const token = localStorage.getItem('token');
     try {
-        await axios.post("http://localhost:3000/expense/add-expense", obj, { headers: { "Authorization": token } }).then(response => {
+        await axios.post(`${backendAPI}/expense/add-expense`, obj, { headers: { "Authorization": token } }).then(response => {
             console.log('***12344*****', response);
-            showMeUser(response.data.newExpenseDetail);
+            showExpenseToUI(response.data.newExpenseDetail);
         })
     }
     catch (err) {
@@ -113,20 +116,9 @@ async function savetoDB(event) {
 
 }
 
-/*window.addEventListener("DOMContentLoaded", () => {
-    axios.get("http://localhost:3000/admin/get-expense").then((response) => {
-        console.log(response);
-        for (var i = 0; i < response.data.allUsers.length; i++) {
-            showMeUser(response.data.allUsers[i]);
-        }
-    })
-        .catch((err) => {
-            console.log(err);
-        })
-})*/
 
 
-function showMeUser(obj) {
+function showExpenseToUI(obj) {
 
     document.getElementById('details').value = '';
     document.getElementById('amount').value = '';
@@ -134,7 +126,6 @@ function showMeUser(obj) {
 
 
     const parentNode = document.getElementById('listofUsers');
-    console.log('***123**', obj);
     const childNode = `<li class="items" id=${obj.id}> ₹${obj.amount} - ${obj.detail}
         <button onclick="deleteUser('${obj.id}')"> Delete expense </button>
         <button onclick="editUser('${obj.detail}','${obj.amount}','${obj.category}','${obj.id}')"> Edit </button>
@@ -145,7 +136,7 @@ function showMeUser(obj) {
 async function deleteUser(userId) {
     try {
         const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:3000/expense/delete-expense/${userId}`, { headers: { "Authorization": token } })
+        await axios.delete(`${backendAPI}/expense/delete-expense/${userId}`, { headers: { "Authorization": token } })
             .then((response) => {
                 removeFromScreen(userId);
             })
@@ -184,7 +175,7 @@ async function editUser(emai, user, cate, userId) {
         category: cate
     }
     try {
-        await axios.put(`http://localhost:3000/expense/edit-expense/${userId}`, editObj)
+        await axios.put(`${backendAPI}/expense/edit-expense/${userId}`, editObj)
             .then((response) => {
                 //removeFromScreen(userId);
                 deleteUser(userId);
@@ -205,7 +196,7 @@ function removeFromScreen(userId) {
 }
 async function download() {
     const token = localStorage.getItem('token')
-    await axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
+    await axios.get(`${backendAPI}/user/download`, { headers: { "Authorization": token } })
         .then((response) => {
             if (response.status === 201) {
                 //the bcakend is essentially sending a download link
@@ -228,7 +219,7 @@ async function download() {
 }
 async function downloadHistory() {
     const token = localStorage.getItem('token');
-    const history = await axios.get('http://localhost:3000/user/downloadhistory', { headers: { "Authorization": token } })
+    const history = await axios.get(`${backendAPI}/user/downloadhistory`, { headers: { "Authorization": token } })
     console.log(history);
 
     var historyElem = document.getElementById('downloadHistoryList')
@@ -237,5 +228,43 @@ async function downloadHistory() {
         historyElem.innerHTML += `<li>Date - ${historyData.createdAt} link - ${historyData.downloadURL || 0} </li>`
     })
 
+
+}
+
+function showPagination({
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage
+}) {
+    pagination.innerHTML = '';
+    if (hasPreviousPage) {
+        const btn2 = document.createElement('button')
+        btn2.innerHTML = previousPage
+        btn2.addEventListener('click', () => getExpensesPagination(previousPage));
+        pagination.appendChild(btn2);
+    }
+    const btn1 = document.createElement('button');
+    btn1.innerHTML = `<h3>${currentPage}</h3>`
+    btn1.addEventListener('click', () => getExpensesPagination(currentPage));
+    pagination.appendChild(btn1);
+    if (hasNextPage) {
+        const btn3 = document.createElement('button')
+        btn3.innerHTML = nextPage;
+        btn3.addEventListener('click', () => getExpensesPagination(nextPage));
+        pagination.appendChild(btn3);
+    }
+}
+async function getExpensesPagination(page) {
+    const token = localStorage.getItem('token');
+    await axios
+        .get(`${backendAPI}/expense/get-expense?page=${page}`, { headers: { "Authorization": token } })
+        .then(({ data: { expense, ...pageData } }) => {
+            showExpenseToUI(expense);
+            showPagination(pageData);
+        })
+        .catch((err) => console.log(err));
 
 }

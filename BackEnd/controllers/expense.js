@@ -63,19 +63,42 @@ const postAddExp = async (req, res, next) => {
     }
 }
 
-const getExpense = async (req, res, next) => {
+const getExpense = async (req, res) => {
     try {
-        const getWallet = await wallet.findAll({ where: { userId: req.user.id } });
-        return res.status(200).json({ success: true, allUsers: getWallet });
+        console.log("hiii", req.user.id);
+        let ITEMS_PER_PAGE = 2;
+        const page = +req.query.page || 1;
+        let totalItems;
 
+        await wallet
+            .count({ where: { userId: req.user.id } })
+            .then((total) => {
+                totalItems = total;
+            });
+
+        const getWallet = await wallet.findAll({
+            where: { userId: req.user.id },
+            offset: (page - 1) * ITEMS_PER_PAGE,
+            limit: ITEMS_PER_PAGE,
+        });
+        console.log(getWallet);
+        return res.status(200).json({
+            expense: getWallet,
+            currentPage: page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+            nextPage: page + 1,
+            hasPreviousPage: page > 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        });
     } catch (err) {
-        console.log('***GET expense failed***', JSON.stringify(err));
+        console.log("***GET expense failed***", JSON.stringify(err));
         return res.status(402).json({
             success: false,
-            error: err
-        })
+            error: err,
+        });
     }
-}
+};
 
 const deleteExpense = async (req, res, next) => {
     try {
