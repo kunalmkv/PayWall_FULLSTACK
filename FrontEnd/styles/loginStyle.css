@@ -13,6 +13,13 @@
     position: absolute;
 }
 
+.check {
+    display: ruby-text;
+    margin: auto;
+
+    margin-top: 19px;
+}
+
 .form-box {
     width: 380px;
     height: 480px;

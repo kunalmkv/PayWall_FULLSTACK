@@ -219,14 +219,19 @@ async function download() {
 }
 async function downloadHistory() {
     const token = localStorage.getItem('token');
-    const history = await axios.get(`${backendAPI}/user/downloadhistory`, { headers: { "Authorization": token } })
-    console.log(history);
+    await axios.get(`${backendAPI}/user/downloadhistory`, { headers: { "Authorization": token } }).then((data) => {
 
-    var historyElem = document.getElementById('downloadHistoryList')
-    historyElem.innerHTML += '<h1>Download History </<h1>'
-    history.forEach((historyData) => {
-        historyElem.innerHTML += `<li>Date - ${historyData.createdAt} link - ${historyData.downloadURL || 0} </li>`
+        console.log('*******', data.data);
+
+        // var historyElem = document.getElementById('downloadHistoryList')
+        // historyElem.innerHTML += '<h1>Download History </<h1>'
+        // data.forEach((historyData) => {
+        //     historyElem.innerHTML += `<li>Date - ${historyData.createdAt} link - ${historyData.downloadURL || 0} </li>`
+        // })
+
+
     })
+
 
 
 }
@@ -259,9 +264,12 @@ function showPagination({
 }
 async function getExpensesPagination(page) {
     const token = localStorage.getItem('token');
+
     await axios
         .get(`${backendAPI}/expense/get-expense?page=${page}`, { headers: { "Authorization": token } })
         .then(({ data: { expense, ...pageData } }) => {
+            console.log('****expense****', expense);
+            console.log('****pageData', pageData);
             showExpenseToUI(expense);
             showPagination(pageData);
         })

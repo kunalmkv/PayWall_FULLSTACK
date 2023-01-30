@@ -27,7 +27,10 @@
             <form id="login" class="input-group" onsubmit="userLogin(event)">
                 <input type="email" class="input-field" id="email" name="email" placeholder="Enter email ID" required>
                 <input type="password" class="input-field" placeholder="Enter Password" id="pw" name="pw" required>
-                <input type="checkbox" class="check-box"><span> Remember Password</span>
+                <div class="check">
+                    <input type="checkbox" class="check-box">
+                    <span style="display: contents"> Remember Password</span>
+                </div>
                 <button type="submit" class="submit-btn">Login</button>
                 <a id="forgotPass" onclick="showforgetpasswordForm()" href="#" class="forgot-password">Forget
                     Password?</a>

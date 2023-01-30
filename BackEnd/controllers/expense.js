@@ -65,7 +65,7 @@ const postAddExp = async (req, res, next) => {
 
 const getExpense = async (req, res) => {
     try {
-        console.log("hiii", req.user.id);
+        console.log("hiii", req.user);
         let ITEMS_PER_PAGE = 2;
         const page = +req.query.page || 1;
         let totalItems;
@@ -152,11 +152,11 @@ const downloadHistory = async (req, res) => {
     const uID = req.user.id;
     console.log('*********', uID, '*********');
 
-    const Data = await downloadHistoryTable.findAll({ where: { userId: uID } });
+    const data = await downloadHistoryTable.findAll({ where: { userId: uID } });
 
-    console.log('*********', historyData);
+    console.log('*********', Data);
 
-    return res.status(200).json({ success: true, historyData });
+    return res.status(200).json({ success: true, Data });
 
 
 }

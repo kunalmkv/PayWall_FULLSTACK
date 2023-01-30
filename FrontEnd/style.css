@@ -8,6 +8,8 @@ body {
     text-align: right
 }
 
+
+
 body::before {
     content: "XS";
     color: red;
