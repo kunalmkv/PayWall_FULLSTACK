@@ -15,6 +15,8 @@ function parseJwt(token) {
 window.addEventListener("DOMContentLoaded", async () => {
     try {
         const page = 1;
+        const page_items = localStorage.getItem('number_of_items');
+
         const token = localStorage.getItem('token');
         const decodeToken = parseJwt(token);
         console.log('token:', decodeToken);
@@ -24,7 +26,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             showLeaderboard()
 
         }
-        await axios.get(`${backendAPI}/expense/get-expense?page=${page}`, { headers: { "Authorization": token } }).then(({ data: { expense, ...pageData } }) => {
+        await axios.get(`${backendAPI}/expense/get-expense?page=${page}&ITEMS_PER_PAGE=${page_items}`, { headers: { "Authorization": token } }).then(({ data: { expense, ...pageData } }) => {
             console.log(pageData);
 
             expense.forEach(showExpenseToUI);
@@ -244,35 +246,51 @@ function showPagination({
     previousPage,
     lastPage
 }) {
+    const page_items = localStorage.getItem('number_of_items');
     pagination.innerHTML = '';
     if (hasPreviousPage) {
         const btn2 = document.createElement('button')
         btn2.innerHTML = previousPage
-        btn2.addEventListener('click', () => getExpensesPagination(previousPage));
+        btn2.addEventListener('click', async () => await getExpensesPagination(previousPage));
         pagination.appendChild(btn2);
     }
     const btn1 = document.createElement('button');
     btn1.innerHTML = `<h3>${currentPage}</h3>`
-    btn1.addEventListener('click', () => getExpensesPagination(currentPage));
+    btn1.addEventListener('click', async () => await getExpensesPagination(currentPage));
     pagination.appendChild(btn1);
     if (hasNextPage) {
         const btn3 = document.createElement('button')
         btn3.innerHTML = nextPage;
-        btn3.addEventListener('click', () => getExpensesPagination(nextPage));
+        btn3.addEventListener('click', async () => await getExpensesPagination(nextPage));
         pagination.appendChild(btn3);
+    }
+    if (lastPage) {
+        const btnLast = document.createElement('button')
+        btnLast.innerHTML = "Last";
+        btnLast.addEventListener('click', async () => await getExpensesPagination(lastPage));
+        pagination.appendChild(btnLast);
     }
 }
 async function getExpensesPagination(page) {
     const token = localStorage.getItem('token');
+    const page_items = localStorage.getItem('number_of_items');
 
     await axios
-        .get(`${backendAPI}/expense/get-expense?page=${page}`, { headers: { "Authorization": token } })
+        .get(`${backendAPI}/expense/get-expense?page=${page}&ITEMS_PER_PAGE=${page_items}`, { headers: { "Authorization": token } })
         .then(({ data: { expense, ...pageData } }) => {
             console.log('****expense****', expense);
             console.log('****pageData', pageData);
-            showExpenseToUI(expense);
+            listofUsers.innerHTML = '';
+            expense.forEach(showExpenseToUI);
             showPagination(pageData);
         })
         .catch((err) => console.log(err));
 
+}
+
+function noOfItems() {
+
+    const n = numberOfItems.value;
+    localStorage.setItem('number_of_items', n);
+    alert(n);
 }
