@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('pay_wall', 'root', 'India@123', { dialect: 'mysql', host: 'localhost' });
+dotenv.config();
+const sequelize = new Sequelize('pay_wall', 'root', process.env.db_key, { dialect: 'mysql', host: 'localhost' });
 module.exports = sequelize;

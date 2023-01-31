@@ -289,8 +289,6 @@ async function getExpensesPagination(page) {
 }
 
 function noOfItems() {
-
     const n = numberOfItems.value;
     localStorage.setItem('number_of_items', n);
-    alert(n);
 }
