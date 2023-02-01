@@ -12,14 +12,13 @@ async function newUserSave(event) {
     }
     try {
         await axios.post("http://localhost:3000/newUser/add", obj).then(response => {
-            console.log('***12344*****', response);
-            //showMeUser(response.data.newExpenseDetail);
+
+            alert('Registered Successfully. Login!!');
         })
     }
     catch (err) {
-        //document.body.innerHTML = document.body.innerHTML + "<H4>Something went wrong!<h4>";
+
         alert('Oopss! User exists Already!! Login Please');
-        console.log("****** Could not post error*****", err);
     }
 
 }
