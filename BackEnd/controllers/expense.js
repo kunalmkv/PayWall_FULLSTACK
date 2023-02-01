@@ -150,13 +150,13 @@ const editExpense = async (req, res, next) => {
 }
 const downloadHistory = async (req, res) => {
     const uID = req.user.id;
-    console.log('*********', uID, '*********');
 
-    const data = await downloadHistoryTable.findAll({ where: { userId: uID } });
 
-    console.log('*********', data);
+    const downloadhistory = await downloadHistoryTable.findAll({ where: { userId: uID } });
 
-    return res.status(200).json({ success: true, Data });
+
+
+    return res.status(200).json({ success: true, downloadhistory });
 
 
 }

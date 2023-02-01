@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const fs = require('fs');
+const https = require('https');
 
 const user = require('./models/user');
 const userWallet = require('./models/wallet');
@@ -30,7 +31,8 @@ const { default: helmet } = require('helmet');
 const PORT = process.env.port || 3000;
 
 
-
+const privateKey = fs.readFileSync('server.key');
+const certificate = fs.readFileSync('server.cert')
 
 const app = express();
 
@@ -57,6 +59,10 @@ userWallet.belongsTo(user);
 user.hasMany(Order);
 Order.belongsTo(user);
 sequelize.sync().then(result => {
+
+    //  https
+    // .createServer({ key: privateKey, cert: certificate }, app)
+    //  .listen(PORT);
     app.listen(PORT);
 })
     .catch(err => {
