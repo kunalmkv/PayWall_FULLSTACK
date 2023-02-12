@@ -17,7 +17,7 @@ const premiumRoute = require('./routes/premium');
 // get config vars
 dotenv.config();
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+//const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
 
 var cors = require('cors');
@@ -31,13 +31,13 @@ const { default: helmet } = require('helmet');
 const PORT = process.env.port || 3000;
 
 
-const privateKey = fs.readFileSync('server.key');
-const certificate = fs.readFileSync('server.cert')
+//const privateKey = fs.readFileSync('server.key');
+//const certificate = fs.readFileSync('server.cert')
 
 const app = express();
 
-app.use(helmet());
-app.use(morgan('combined', { stream: accessLogStream }));
+//app.use(helmet());
+//app.use(morgan('combined', { stream: accessLogStream }));
 app.use(cors());
 app.use(bodyParser.json());
 
