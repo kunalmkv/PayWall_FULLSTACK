@@ -47,8 +47,6 @@ function showLeaderboard() {
     inputElement.onclick = async () => {
         const token = localStorage.getItem('token')
         const userLeaderBoardArray = await axios.get(`${backendAPI}/premium/showLeaderBoard`, { headers: { "Authorization": token } })
-        //console.log('******** in show leader Board')
-        // console.log('leader board data', userLeaderBoardArray.data);
 
         var leaderboardElem = document.getElementById('leaderboard')
         leaderboardElem.innerHTML += '<h1> Leader Board </<h1>'
@@ -78,10 +76,6 @@ document.getElementById('rzp-button1').onclick = async function (e) {
             }, { headers: { "Authorization": token } })
             alert('You are a Premium User now');
             showPremiumUserMessage();
-            console.log('*****', res);
-            //localStorage.setItem('token', res.data.token);
-
-
         }
     };
     const rzp1 = new Razorpay(options);
@@ -148,22 +142,7 @@ async function deleteUser(userId) {
     }
 
 }
-/*function deleteUser(userId) {
 
-    axios.delete(`http://localhost:3000/admin/delete-expense/${userId}`)
-        .then((response) => {
-            removeFromScreen(userId);
-        })
-
-}*/
-/*function editUser(emai, user, cate, userId) {
-    document.getElementById('details').value = emai;
-    document.getElementById('amount').value = user;
-    document.getElementById('category').value = cate;
-    deleteUser(userId);
-    removeFromScreen(userId);
-
-}*/
 async function editUser(emai, user, cate, userId) {
     document.getElementById('details').value = emai;
     document.getElementById('amount').value = user;
@@ -179,7 +158,7 @@ async function editUser(emai, user, cate, userId) {
     try {
         await axios.put(`${backendAPI}/expense/edit-expense/${userId}`, editObj)
             .then((response) => {
-                //removeFromScreen(userId);
+
                 deleteUser(userId);
                 console.log('edited', response);
             })
@@ -201,8 +180,7 @@ async function download() {
     await axios.get(`${backendAPI}/user/download`, { headers: { "Authorization": token } })
         .then((response) => {
             if (response.status === 201) {
-                //the bcakend is essentially sending a download link
-                //  which if we open in browser, the file would download
+
                 console.log(response);
                 var a = document.createElement("a");
                 a.href = response.data.fileURL;
